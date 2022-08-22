@@ -1,10 +1,15 @@
 package miyu.kms.interceptor;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
+import miyu.kms.annotations.RequiresRoles;
+import miyu.kms.constant.ResponseCode;
 import miyu.kms.constant.SysConstant;
+import miyu.kms.constant.UserType;
 import miyu.kms.handler.TokenHandler;
 import miyu.kms.handler.UserHolder;
+import miyu.kms.model.ResponseVo;
 import miyu.kms.module.user.dto.UserDTO;
 import miyu.kms.utils.IpUtils;
 import org.slf4j.MDC;
@@ -64,6 +69,31 @@ public class AccessInterceptor implements HandlerInterceptor {
                 log.warn("Invalid token: {}", token);
             }
         }
+
+        RequiresRoles roles = handler.getMethodAnnotation(RequiresRoles.class);
+        if (null != roles && roles.value().length > 0) {
+            if (user == null) {
+                log.warn("The user is not logged in!");
+                printResponse(response, ResponseCode.UN_LOGIN);
+                return false;
+            }
+
+            boolean hasRole = false;
+            UserType role = UserType.valueOf(user.getUserType());
+            if (null != role) {
+                for (UserType e : roles.value()) {
+                    if (e == role) {
+                        hasRole = true;
+                        break;
+                    }
+                }
+            }
+            if (!hasRole) {
+                log.warn("The current user does not have permission!");
+                printResponse(response, ResponseCode.UN_ROLE);
+                return false;
+            }
+        }
         return true;
     }
 
@@ -88,9 +118,9 @@ public class AccessInterceptor implements HandlerInterceptor {
         MDC.clear();
     }
 
-//    void printResponse(HttpServletResponse response, ResponseCode respCode) throws IOException {
-//        response.setCharacterEncoding(ENCODING);
-//        response.setContentType(CONTENT_TYPE);
-//        response.getWriter().write(JSON.toJSONString(ResponseVo.create(respCode)));
-//    }
+    void printResponse(HttpServletResponse response, ResponseCode respCode) throws IOException {
+        response.setCharacterEncoding(ENCODING);
+        response.setContentType(CONTENT_TYPE);
+        response.getWriter().write(JSONUtil.toJsonStr(ResponseVo.create(respCode)));
+    }
 }
