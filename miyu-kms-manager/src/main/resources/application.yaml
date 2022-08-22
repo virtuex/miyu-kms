@@ -34,3 +34,7 @@ spring:
     lettuce:
       pool:
         max-active: 100
+miyu:
+  kms:
+    config:
+      is-check-code: false

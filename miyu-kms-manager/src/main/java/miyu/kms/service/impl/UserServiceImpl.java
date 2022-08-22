@@ -14,6 +14,7 @@ import miyu.kms.model.login.dto.UserLoginDTO;
 import miyu.kms.module.user.dto.UserDTO;
 import miyu.kms.service.UserService;
 import miyu.kms.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -33,12 +34,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private TokenHandler tokenHandler;
+    @Value("${miyu.kms.config.is-check-code}")
+    private Boolean isCheckCaptchaCode = true;
 
     public String login(UserLoginDTO userLoginDTO) throws BizException {
         // step 1: 校验验证码
-
-        checkCaptchaCode(userLoginDTO.getUuid(), userLoginDTO.getCaptchaCode());
-
+        if(isCheckCaptchaCode) {
+            checkCaptchaCode(userLoginDTO.getUuid(), userLoginDTO.getCaptchaCode());
+        }
         // step2: 校验密码
         UserDTO userDto = checkPassword(userLoginDTO.getUsername(), userLoginDTO.getPassword());
         return tokenHandler.createToken(userDto);
