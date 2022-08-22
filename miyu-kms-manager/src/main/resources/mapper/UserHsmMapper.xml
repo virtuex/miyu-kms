@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="miyu.kms.mapper.UserHsmMapper">
+
+    <resultMap id="BaseResultMap" type="miyu.kms.entity.UserHsm">
+            <id property="userHsmId" column="USER_HSM_ID" jdbcType="INTEGER"/>
+            <result property="userHsmlHsmId" column="USER_HSML_HSM_ID" jdbcType="INTEGER"/>
+            <result property="userHsmUserId" column="USER_HSM_USER_ID" jdbcType="INTEGER"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"/>
+            <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        USER_HSM_ID,USER_HSML_HSM_ID,USER_HSM_USER_ID,
+        CREATED_BY,CREATED_TIME,UPDATED_BY,
+        UPDATED_TIME
+    </sql>
+</mapper>

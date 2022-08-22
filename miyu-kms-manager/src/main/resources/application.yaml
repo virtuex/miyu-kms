@@ -1,0 +1,36 @@
+server:
+  # 服务端口
+  port: 8080
+  servlet:
+    context-path: /miyu-kms-api
+    encoding:
+      charset: UTF-8
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 数据库用户名
+    username: root
+    # 数据库密码
+    password: root123
+    # 数据库连接地址
+    url: jdbc:mysql://127.0.0.1:3306/miyu_kms?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 5
+      connection-timeout: 30000
+      max-lifetime: 1800000
+      idle-timeout: 600000
+  redis:
+    # redis集群节点配置: ip:port,ip:port
+    #cluster:
+    #nodes: 10.10.8.173:6379,10.10.8.174:6379
+    # redis单机配置, 默认单节点
+    host: 127.0.0.1
+    port: 6379
+    # redis密码
+    password:
+    timeout: 60000
+    lettuce:
+      pool:
+        max-active: 100

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="miyu.kms.mapper.MasterKeyMapper">
+
+    <resultMap id="BaseResultMap" type="miyu.kms.entity.MasterKey">
+            <id property="mkId" column="MK_ID" jdbcType="INTEGER"/>
+            <result property="mkAlias" column="MK_ALIAS" jdbcType="VARCHAR"/>
+            <result property="mkDesc" column="MK_DESC" jdbcType="VARCHAR"/>
+            <result property="mkType" column="MK_TYPE" jdbcType="VARCHAR"/>
+            <result property="mkAlgorithm" column="MK_ALGORITHM" jdbcType="VARCHAR"/>
+            <result property="mkPadding" column="MK_PADDING" jdbcType="VARCHAR"/>
+            <result property="mkMode" column="MK_MODE" jdbcType="VARCHAR"/>
+            <result property="mkUserId" column="MK_USER_ID" jdbcType="INTEGER"/>
+            <result property="mkKeyspaceId" column="MK_KEYSPACE_ID" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="VARCHAR"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="INTEGER"/>
+            <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        MK_ID,MK_ALIAS,MK_DESC,
+        MK_TYPE,MK_ALGORITHM,MK_PADDING,
+        MK_MODE,MK_USER_ID,MK_KEYSPACE_ID,
+        CREATED_TIME,UPDATED_BY,CREATED_BY,
+        UPDATED_TIME
+    </sql>
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="miyu.kms.mapper.MasterKeypairMapper">
+
+    <resultMap id="BaseResultMap" type="miyu.kms.entity.MasterKeypair">
+            <id property="mkpId" column="MKP_ID" jdbcType="INTEGER"/>
+            <result property="mkpAlias" column="MKP_ALIAS" jdbcType="VARCHAR"/>
+            <result property="mkpDesc" column="MKP_DESC" jdbcType="VARCHAR"/>
+            <result property="mkpType" column="MKP_TYPE" jdbcType="VARCHAR"/>
+            <result property="mkpAlgorithm" column="MKP_ALGORITHM" jdbcType="VARCHAR"/>
+            <result property="mkpUserId" column="MKP_USER_ID" jdbcType="INTEGER"/>
+            <result property="mkpKeyspaceId" column="MKP_KEYSPACE_ID" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="INTEGER"/>
+            <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        MKP_ID,MKP_ALIAS,MKP_DESC,
+        MKP_TYPE,MKP_ALGORITHM,MKP_USER_ID,
+        MKP_KEYSPACE_ID,CREATED_TIME,UPDATED_BY,
+        UPDATED_TIME,CREATED_BY
+    </sql>
+</mapper>
