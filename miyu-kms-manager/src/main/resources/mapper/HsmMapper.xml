@@ -5,15 +5,15 @@
 <mapper namespace="miyu.kms.mapper.HsmMapper">
 
     <resultMap id="BaseResultMap" type="miyu.kms.entity.Hsm">
-            <id property="hsmId" column="HSM_ID" jdbcType="INTEGER"/>
+            <id property="hsmId" column="HSM_ID" jdbcType="BIGINT"/>
             <result property="hsmHost" column="HSM_HOST" jdbcType="VARCHAR"/>
-            <result property="hsmPort" column="HSM_PORT" jdbcType="INTEGER"/>
+            <result property="hsmPort" column="HSM_PORT" jdbcType="BIGINT"/>
             <result property="hsmUser" column="HSM_USER" jdbcType="VARCHAR"/>
             <result property="hsmPassword" column="HSM_PASSWORD" jdbcType="VARCHAR"/>
             <result property="hsmType" column="HSM_TYPE" jdbcType="VARCHAR"/>
-            <result property="createdBy" column="CREATED_BY" jdbcType="INTEGER"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="BIGINT"/>
             <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
-            <result property="updatedBy" column="UPDATED_BY" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="BIGINT"/>
             <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
     </resultMap>
 

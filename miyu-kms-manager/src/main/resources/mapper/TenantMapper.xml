@@ -5,13 +5,13 @@
 <mapper namespace="miyu.kms.mapper.TenantMapper">
 
     <resultMap id="BaseResultMap" type="miyu.kms.entity.Tenant">
-            <id property="tenantId" column="TENANT_ID" jdbcType="INTEGER"/>
+            <id property="tenantId" column="TENANT_ID" jdbcType="BIGINT"/>
             <result property="tenantName" column="TENANT_NAME" jdbcType="VARCHAR"/>
             <result property="tenantDes" column="TENANT_DES" jdbcType="VARCHAR"/>
             <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
-            <result property="updatedBy" column="UPDATED_BY" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="BIGINT"/>
             <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
-            <result property="createdBy" column="CREATED_BY" jdbcType="INTEGER"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="BIGINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

@@ -5,14 +5,14 @@
 <mapper namespace="miyu.kms.mapper.KeyspaceMapper">
 
     <resultMap id="BaseResultMap" type="miyu.kms.entity.Keyspace">
-            <id property="spaceId" column="SPACE_ID" jdbcType="INTEGER"/>
-            <result property="spaceHsmId" column="SPACE_HSM_ID" jdbcType="INTEGER"/>
-            <result property="spaceUserId" column="SPACE_USER_ID" jdbcType="INTEGER"/>
+            <id property="spaceId" column="SPACE_ID" jdbcType="BIGINT"/>
+            <result property="spaceHsmId" column="SPACE_HSM_ID" jdbcType="BIGINT"/>
+            <result property="spaceUserId" column="SPACE_USER_ID" jdbcType="BIGINT"/>
             <result property="spaceDesc" column="SPACE_DESC" jdbcType="VARCHAR"/>
             <result property="spaceStatus" column="SPACE_STATUS" jdbcType="INTEGER"/>
-            <result property="createdBy" column="CREATED_BY" jdbcType="INTEGER"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="BIGINT"/>
             <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
-            <result property="updatedBy" column="UPDATED_BY" jdbcType="INTEGER"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="BIGINT"/>
             <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
     </resultMap>
 

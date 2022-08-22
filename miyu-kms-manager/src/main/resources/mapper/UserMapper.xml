@@ -5,19 +5,20 @@
 <mapper namespace="miyu.kms.mapper.UserMapper">
 
     <resultMap id="BaseResultMap" type="miyu.kms.entity.User">
-            <id property="userId" column="USER_ID" jdbcType="INTEGER"/>
+            <id property="userId" column="USER_ID" jdbcType="BIGINT"/>
             <result property="userName" column="USER_NAME" jdbcType="VARCHAR"/>
             <result property="userType" column="USER_TYPE" jdbcType="VARCHAR"/>
             <result property="userPassword" column="USER_PASSWORD" jdbcType="VARCHAR"/>
             <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
-            <result property="updatedBy" column="UPDATED_BY" jdbcType="INTEGER"/>
+            <result property="createdBy" column="CREATED_BY" jdbcType="BIGINT"/>
+            <result property="updatedBy" column="UPDATED_BY" jdbcType="BIGINT"/>
             <result property="updatedTime" column="UPDATED_TIME" jdbcType="TIMESTAMP"/>
             <result property="userDesc" column="USER_DESC" jdbcType="VARCHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         USER_ID,USER_NAME,USER_TYPE,
-        USER_PASSWORD,CREATED_TIME,UPDATED_BY,
-        UPDATED_TIME,USER_DESC
+        USER_PASSWORD,CREATED_TIME,CREATED_BY,
+        UPDATED_BY,UPDATED_TIME,USER_DESC
     </sql>
 </mapper>
