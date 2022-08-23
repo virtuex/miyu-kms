@@ -10,7 +10,7 @@ import miyu.kms.constant.UserType;
 import miyu.kms.handler.TokenHandler;
 import miyu.kms.handler.UserHolder;
 import miyu.kms.model.ResponseVo;
-import miyu.kms.module.user.dto.UserDTO;
+import miyu.kms.model.user.dto.UserDTO;
 import miyu.kms.utils.IpUtils;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;

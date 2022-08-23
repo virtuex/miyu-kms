@@ -36,7 +36,7 @@ public class ControllerAspect {
         // 被拦截的类
         String clazzName = pjp.getTarget().getClass().getName();
         // 被拦截的方法签名
-        MethodSignature methodSignature = (MethodSignature)pjp.getSignature();
+        MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         // 被拦截的方法
         Method method = methodSignature.getMethod();
         // 被拦截的方法名
@@ -55,16 +55,18 @@ public class ControllerAspect {
         try {
             returnObj = pjp.proceed(args);
         } catch (BizException e) {
+            String message = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
             log.warn("A biz exception occurred on the request. Error message: " + e.getMsg());
             log.error(e.getMsg(), e);
-            returnObj = ResponseVo.create(e.getCode(), e.getCause().getMessage());
+            returnObj = ResponseVo.create(e.getCode(), message);
         } catch (Throwable e) {
             log.error("An exception occurred on the request.", e);
-            returnObj = ResponseVo.create(HttpStatus.HTTP_INTERNAL_ERROR,e.getCause().getMessage());
+            String message = e.getCause() == null ? e.getMessage() : e.getCause().getMessage();
+            returnObj = ResponseVo.create(HttpStatus.HTTP_INTERNAL_ERROR, message);
         }
 
         log.debug("End of request, Used Time: {}ms, Return result: {}.", (System.currentTimeMillis() - start),
-            returnObj);
+                returnObj);
         return returnObj;
     }
 }

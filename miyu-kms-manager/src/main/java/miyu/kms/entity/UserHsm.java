@@ -1,28 +1,33 @@
 package miyu.kms.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Builder;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
-import lombok.Data;
 
 /**
- * 授权用户可以使用的HSM
+ * 授权用户可以使用的HSM。这里应该使用userHsmHsmId和userHsmUserId作为复合主键，但是MBP不支持，暂时放弃。
+ * @author xudean
  * @TableName T_USER_HSM
  */
 @TableName(value ="T_USER_HSM")
 @Data
+@Builder
 public class UserHsm implements Serializable {
-    /**
-     * 租户号
-     */
+
+
     @TableId
     private Long userHsmId;
 
     /**
      * 密码机id
      */
-    private Long userHsmlHsmId;
+    private Long userHsmHsmId;
 
     /**
      * 用户id

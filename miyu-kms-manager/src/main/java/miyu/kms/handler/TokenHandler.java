@@ -1,7 +1,7 @@
 package miyu.kms.handler;
 
 import lombok.NonNull;
-import miyu.kms.module.user.dto.UserDTO;
+import miyu.kms.model.user.dto.UserDTO;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

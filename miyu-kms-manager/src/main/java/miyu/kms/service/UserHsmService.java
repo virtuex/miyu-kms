@@ -9,5 +9,18 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-08-22 11:57:04
 */
 public interface UserHsmService extends IService<UserHsm> {
+    /**
+     * 创建用户和密码机的分配关系
+     * @param hsmIds
+     * @param userId
+     */
+    void saveAllUserHsm(String hsmIds, Long userId);
+
+    /**
+     * 更新分配关系
+     * @param hsmIds
+     * @param userId
+     */
+    void UpdateAllUserHsm(String hsmIds, Long userId);
 
 }

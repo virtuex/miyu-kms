@@ -15,7 +15,7 @@ import miyu.kms.handler.CaptchaHandler;
 import miyu.kms.handler.TokenHandler;
 import miyu.kms.model.login.dto.UserLoginDTO;
 import miyu.kms.model.user.dto.UserDetailDTO;
-import miyu.kms.module.user.dto.UserDTO;
+import miyu.kms.model.user.dto.UserDTO;
 import miyu.kms.service.UserService;
 import miyu.kms.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Value;

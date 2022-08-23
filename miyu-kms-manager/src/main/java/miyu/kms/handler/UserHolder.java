@@ -3,7 +3,7 @@ package miyu.kms.handler;
 
 import miyu.kms.constant.ResponseCode;
 import miyu.kms.exceptions.BizException;
-import miyu.kms.module.user.dto.UserDTO;
+import miyu.kms.model.user.dto.UserDTO;
 
 /**
  * @author xudean

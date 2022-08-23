@@ -1,4 +1,4 @@
-package miyu.kms.module.user.dto;
+package miyu.kms.model.user.dto;
 
 import lombok.*;
 import miyu.kms.entity.User;
