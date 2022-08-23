@@ -6,11 +6,13 @@
 
     <resultMap id="BaseResultMap" type="miyu.kms.entity.Hsm">
             <id property="hsmId" column="HSM_ID" jdbcType="BIGINT"/>
+            <result property="hsmIdentifier" column="HSM_IDENTIFIER" jdbcType="VARCHAR"/>
             <result property="hsmHost" column="HSM_HOST" jdbcType="VARCHAR"/>
             <result property="hsmPort" column="HSM_PORT" jdbcType="BIGINT"/>
             <result property="hsmUser" column="HSM_USER" jdbcType="VARCHAR"/>
             <result property="hsmPassword" column="HSM_PASSWORD" jdbcType="VARCHAR"/>
             <result property="hsmType" column="HSM_TYPE" jdbcType="VARCHAR"/>
+            <result property="hsmStatus" column="HSM_STATUS" jdbcType="VARCHAR"/>
             <result property="createdBy" column="CREATED_BY" jdbcType="BIGINT"/>
             <result property="createdTime" column="CREATED_TIME" jdbcType="TIMESTAMP"/>
             <result property="updatedBy" column="UPDATED_BY" jdbcType="BIGINT"/>
@@ -18,9 +20,9 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        HSM_ID,HSM_HOST,HSM_PORT,
-        HSM_USER,HSM_PASSWORD,HSM_TYPE,
-        CREATED_BY,CREATED_TIME,UPDATED_BY,
-        UPDATED_TIME
+        HSM_ID,HSM_IDENTIFIER,HSM_HOST,
+        HSM_PORT,HSM_USER,HSM_PASSWORD,
+        HSM_TYPE,HSM_STATUS,CREATED_BY,
+        CREATED_TIME,UPDATED_BY,UPDATED_TIME
     </sql>
 </mapper>
