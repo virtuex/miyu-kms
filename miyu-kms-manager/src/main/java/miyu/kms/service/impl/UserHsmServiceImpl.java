@@ -1,8 +1,11 @@
 package miyu.kms.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import miyu.kms.entity.UserHsm;
+import miyu.kms.exceptions.BizException;
 import miyu.kms.handler.UserHolder;
 import miyu.kms.service.UserHsmService;
 import miyu.kms.mapper.UserHsmMapper;
@@ -28,6 +31,7 @@ public class UserHsmServiceImpl extends ServiceImpl<UserHsmMapper, UserHsm>
 
     @Override
     public void saveAllUserHsm(String hsmIds, Long userId) {
+        checkHsmIds(hsmIds);
         remove(new LambdaQueryWrapper<UserHsm>().eq(UserHsm::getUserHsmUserId, userId));
         String[] ids = hsmIds.split(",");
         List<UserHsm> userHsms = new ArrayList<>();
@@ -40,6 +44,10 @@ public class UserHsmServiceImpl extends ServiceImpl<UserHsmMapper, UserHsm>
     @Override
     public void UpdateAllUserHsm(String hsmIds, Long userId) {
         remove(new LambdaQueryWrapper<UserHsm>().eq(UserHsm::getUserHsmUserId, userId));
+        if (StrUtil.isBlank(hsmIds)) {
+            //如果是个空白字符串，直接清空
+            return;
+        }
         String[] ids = hsmIds.split(",");
         List<UserHsm> userHsms = new ArrayList<>();
         Arrays.stream(ids).forEach(id -> {
@@ -50,6 +58,12 @@ public class UserHsmServiceImpl extends ServiceImpl<UserHsmMapper, UserHsm>
                     .build());
         });
         saveOrUpdateBatch(userHsms);
+    }
+
+    private void checkHsmIds(String hsmIds) {
+        if (StrUtil.isEmpty(hsmIds) || StrUtil.contains(hsmIds, "，")) {
+            throw new BizException(HttpStatus.HTTP_INTERNAL_ERROR, "Invalid parameter: hsmIds");
+        }
     }
 
 }
