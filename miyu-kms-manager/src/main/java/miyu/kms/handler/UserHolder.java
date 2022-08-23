@@ -1,6 +1,8 @@
 package miyu.kms.handler;
 
 
+import miyu.kms.constant.ResponseCode;
+import miyu.kms.exceptions.BizException;
 import miyu.kms.module.user.dto.UserDTO;
 
 /**
@@ -12,8 +14,16 @@ public class UserHolder {
 
     private UserHolder() {}
 
-    public static UserDTO get() {
+    private static UserDTO get() {
         return USER_THREAD_LOCAL.get();
+    }
+
+    public static UserDTO getUserDTO(){
+        UserDTO userDTO = get();
+        if(null == userDTO){
+            throw new BizException(ResponseCode.UN_LOGIN);
+        }
+        return userDTO;
     }
 
     public static void set(UserDTO user) {

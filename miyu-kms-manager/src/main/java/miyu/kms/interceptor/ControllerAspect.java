@@ -1,6 +1,7 @@
 package miyu.kms.interceptor;
 
 
+import cn.hutool.http.HttpStatus;
 import lombok.extern.slf4j.Slf4j;
 import miyu.kms.constant.ResponseCode;
 import miyu.kms.exceptions.BizException;
@@ -56,10 +57,10 @@ public class ControllerAspect {
         } catch (BizException e) {
             log.warn("A biz exception occurred on the request. Error message: " + e.getMsg());
             log.error(e.getMsg(), e);
-            returnObj = ResponseVo.create(e.getCode(), e.getMsg());
+            returnObj = ResponseVo.create(e.getCode(), e.getCause().getMessage());
         } catch (Throwable e) {
             log.error("An exception occurred on the request.", e);
-            returnObj = ResponseVo.create(ResponseCode.FAIL);
+            returnObj = ResponseVo.create(HttpStatus.HTTP_INTERNAL_ERROR,e.getCause().getMessage());
         }
 
         log.debug("End of request, Used Time: {}ms, Return result: {}.", (System.currentTimeMillis() - start),

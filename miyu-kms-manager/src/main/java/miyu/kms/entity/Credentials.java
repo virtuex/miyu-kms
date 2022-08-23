@@ -1,18 +1,18 @@
 package miyu.kms.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * 凭据表
+ *
  * @TableName T_CREDENTIALS
  */
-@TableName(value ="T_CREDENTIALS")
+@TableName(value = "T_CREDENTIALS")
 @Data
 public class Credentials implements Serializable {
     /**
@@ -34,21 +34,25 @@ public class Credentials implements Serializable {
     /**
      * 创建时间
      */
+    @TableField(fill = FieldFill.INSERT)
     private Date createdTime;
 
     /**
      * 更新人
      */
+    @TableField(fill = FieldFill.UPDATE)
     private Long updatedBy;
 
     /**
      * 更新时间
      */
+    @TableField( fill = FieldFill.UPDATE)
     private Date updatedTime;
 
     /**
      * 创建人
      */
+    @TableField(fill = FieldFill.INSERT)
     private Long createdBy;
 
     @TableField(exist = false)
@@ -67,12 +71,12 @@ public class Credentials implements Serializable {
         }
         Credentials other = (Credentials) that;
         return (this.getCreId() == null ? other.getCreId() == null : this.getCreId().equals(other.getCreId()))
-            && (this.getCreContent() == null ? other.getCreContent() == null : this.getCreContent().equals(other.getCreContent()))
-            && (this.getCreType() == null ? other.getCreType() == null : this.getCreType().equals(other.getCreType()))
-            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
-            && (this.getUpdatedBy() == null ? other.getUpdatedBy() == null : this.getUpdatedBy().equals(other.getUpdatedBy()))
-            && (this.getUpdatedTime() == null ? other.getUpdatedTime() == null : this.getUpdatedTime().equals(other.getUpdatedTime()))
-            && (this.getCreatedBy() == null ? other.getCreatedBy() == null : this.getCreatedBy().equals(other.getCreatedBy()));
+                && (this.getCreContent() == null ? other.getCreContent() == null : this.getCreContent().equals(other.getCreContent()))
+                && (this.getCreType() == null ? other.getCreType() == null : this.getCreType().equals(other.getCreType()))
+                && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
+                && (this.getUpdatedBy() == null ? other.getUpdatedBy() == null : this.getUpdatedBy().equals(other.getUpdatedBy()))
+                && (this.getUpdatedTime() == null ? other.getUpdatedTime() == null : this.getUpdatedTime().equals(other.getUpdatedTime()))
+                && (this.getCreatedBy() == null ? other.getCreatedBy() == null : this.getCreatedBy().equals(other.getCreatedBy()));
     }
 
     @Override

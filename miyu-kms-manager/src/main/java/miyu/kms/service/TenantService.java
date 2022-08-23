@@ -2,6 +2,7 @@ package miyu.kms.service;
 
 import miyu.kms.entity.Tenant;
 import com.baomidou.mybatisplus.extension.service.IService;
+import miyu.kms.model.login.req.TenantAddReq;
 
 /**
 * @author xudean
@@ -9,5 +10,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 * @createDate 2022-08-22 18:29:24
 */
 public interface TenantService extends IService<Tenant> {
-
+    void addTenant(TenantAddReq tenantAddReq);
 }

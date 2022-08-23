@@ -38,7 +38,7 @@ public class LoginController {
 
     @PostMapping("/logout")
     public ResponseVo<?> logout() {
-        tokenHandler.removeToken(UserHolder.get().getUserId());
+        tokenHandler.removeToken(UserHolder.getUserDTO().getUserId());
         return ResponseVo.createSuccess();
     }
 }
