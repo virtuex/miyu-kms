@@ -73,7 +73,7 @@ public class AccessInterceptor implements HandlerInterceptor {
         RequiresRoles roles = handler.getMethodAnnotation(RequiresRoles.class);
         if (null != roles && roles.value().length > 0) {
             if (user == null) {
-                log.warn("The user is not logged in!");
+                log.error("The user is not logged in!");
                 printResponse(response, ResponseCode.UN_LOGIN);
                 return false;
             }

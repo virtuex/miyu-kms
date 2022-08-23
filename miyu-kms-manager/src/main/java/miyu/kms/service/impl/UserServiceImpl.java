@@ -4,13 +4,17 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.BCrypt;
 import cn.hutool.http.HttpStatus;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import miyu.kms.entity.User;
 import miyu.kms.exceptions.BizException;
 import miyu.kms.handler.CaptchaHandler;
 import miyu.kms.handler.TokenHandler;
 import miyu.kms.model.login.dto.UserLoginDTO;
+import miyu.kms.model.user.dto.UserDetailDTO;
 import miyu.kms.module.user.dto.UserDTO;
 import miyu.kms.service.UserService;
 import miyu.kms.mapper.UserMapper;
@@ -18,15 +22,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
 * @author xudean
 * @description 针对表【T_USER(用户表)】的数据库操作Service实现
-* @createDate 2022-08-22 11:57:04
+* @createDate 2022-08-23 14:05:19
 */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
+
     @Resource
     private UserMapper userMapper;
     @Resource
@@ -36,6 +42,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private TokenHandler tokenHandler;
     @Value("${miyu.kms.config.is-check-code}")
     private Boolean isCheckCaptchaCode = true;
+
+    @Override
+    public List<UserDetailDTO> listUsers(long page, long size, long tenantId) {
+        IPage<User> iPage = new Page<User>(page, size);
+        IPage<User> result = userMapper.selectPage(iPage, new LambdaQueryWrapper<User>().eq(User::getUserTenantId,tenantId));
+        return BeanUtil.copyToList(result.getRecords(), UserDetailDTO.class);
+    }
+
+    @Override
+    public int countUserByTenantId(long tenantId) {
+        Long aLong = userMapper.selectCount(new LambdaQueryWrapper<User>().eq(User::getUserTenantId, tenantId));
+        return aLong.intValue();
+    }
+
 
     public String login(UserLoginDTO userLoginDTO) throws BizException {
         // step 1: 校验验证码
@@ -75,6 +95,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 验证成功后删除验证码
         captchaHandler.deleteCaptchaCode(uuid);
     }
+
+
 }
 
 
