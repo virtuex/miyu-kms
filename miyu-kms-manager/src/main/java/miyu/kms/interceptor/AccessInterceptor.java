@@ -1,12 +1,14 @@
 package miyu.kms.interceptor;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpStatus;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 import miyu.kms.annotations.RequiresRoles;
 import miyu.kms.constant.ResponseCode;
 import miyu.kms.constant.SysConstant;
 import miyu.kms.constant.UserType;
+import miyu.kms.exceptions.BizException;
 import miyu.kms.handler.TokenHandler;
 import miyu.kms.handler.UserHolder;
 import miyu.kms.model.ResponseVo;
@@ -41,20 +43,20 @@ public class AccessInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-        @NonNull Object handler) throws IOException {
+                             @NonNull Object handler) throws IOException {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
         // 加入日志跟踪号
         addRequestId();
         log.info("Request Info: [Method = {}], [URI = {}], [Client-IP = {}], [userAgent = {}]", request.getMethod(),
-            request.getRequestURI(), IpUtils.getIpAddr(request), request.getHeader("user-agent"));
+                request.getRequestURI(), IpUtils.getIpAddr(request), request.getHeader("user-agent"));
 
-        return checkRole(request, response, (HandlerMethod)handler);
+        return checkRole(request, response, (HandlerMethod) handler);
     }
 
     private boolean checkRole(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-        @NonNull HandlerMethod handler) throws IOException {
+                              @NonNull HandlerMethod handler) throws IOException {
         String token = request.getHeader(SysConstant.HEADER_TOKEN_KEY);
         if (StrUtil.isEmpty(token)) {
             token = request.getParameter(SysConstant.PARAMETER_TOKEN_KEY);
@@ -74,8 +76,7 @@ public class AccessInterceptor implements HandlerInterceptor {
         if (null != roles && roles.value().length > 0) {
             if (user == null) {
                 log.error("The user is not logged in!");
-                printResponse(response, ResponseCode.UN_LOGIN);
-                return false;
+                throw new BizException(ResponseCode.UN_LOGIN);
             }
 
             boolean hasRole = false;
@@ -89,9 +90,7 @@ public class AccessInterceptor implements HandlerInterceptor {
                 }
             }
             if (!hasRole) {
-                log.warn("The current user does not have permission!");
-                printResponse(response, ResponseCode.UN_ROLE);
-                return false;
+                throw new BizException(HttpStatus.HTTP_INTERNAL_ERROR, "The current user does not have permission!");
             }
         }
         return true;
@@ -99,13 +98,13 @@ public class AccessInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-        @NonNull Object handler, ModelAndView modelAndView) {
+                           @NonNull Object handler, ModelAndView modelAndView) {
 
     }
 
     @Override
     public void afterCompletion(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
-        @NonNull Object handler, Exception ex) {
+                                @NonNull Object handler, Exception ex) {
         removeRequestId();
         UserHolder.remove();
     }

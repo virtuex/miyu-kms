@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
  */
 @Component
 public class TokenHandler {
-    static final String REDIS_TOKEN_PREFIX_KEY = "JUGO_ACCOUNT:TOKEN:";
-    static final String REDIS_USER_PREFIX_KEY = "JUGO_ACCOUNT:USER:";
+    static final String REDIS_TOKEN_PREFIX_KEY = "MIYU:KMS:TOKEN:";
+    static final String REDIS_USER_PREFIX_KEY = "MIYU:KMS:USER:";
 
     private final Long DEFAULT_LOGIN_EXPIRE_TIME = TimeUnit.MINUTES.toMillis(5L);
     @Resource

@@ -70,13 +70,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
 
     protected UserDTO checkPassword(String username, String password) throws BizException {
-        // 只查询状态正常的用户
         User user = userMapper.selectOne(new QueryWrapper<User>().lambda().eq(User::getUserName, username));
         if (user == null || !BCrypt.checkpw(password, user.getUserPassword())) {
             throw new BizException(HttpStatus.HTTP_INTERNAL_ERROR,"用户名或密码错误");
         }
-        // 更新登录时间
-        userMapper.updateById(user);
         return BeanUtil.copyProperties(user, UserDTO.class);
     }
 
