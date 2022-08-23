@@ -1,15 +1,13 @@
 package miyu.kms.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import miyu.kms.entity.Tenant;
-import miyu.kms.handler.UserHolder;
-import miyu.kms.model.login.req.TenantAddReq;
-import miyu.kms.module.user.dto.UserDTO;
+import miyu.kms.model.tenant.req.TenantAddReq;
+import miyu.kms.model.tenant.req.TenantUpdateReq;
 import miyu.kms.service.TenantService;
 import miyu.kms.mapper.TenantMapper;
 import org.springframework.stereotype.Service;
@@ -44,6 +42,17 @@ public class TenantServiceImpl extends ServiceImpl<TenantMapper, Tenant>
     @Override
     public int querySizeOfTenant() {
         return tenantMapper.selectCount(Wrappers.emptyWrapper()).intValue();
+    }
+
+    @Override
+    public Tenant queryTenantById(Long id) {
+        return tenantMapper.selectById(id);
+    }
+
+    @Override
+    public void updateTenant(TenantUpdateReq tenantUpdateReq) {
+        Tenant tenant = BeanUtil.copyProperties(tenantUpdateReq, Tenant.class);
+        tenantMapper.updateById(tenant);
     }
 }
 

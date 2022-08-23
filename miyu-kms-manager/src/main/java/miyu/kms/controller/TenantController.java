@@ -2,9 +2,12 @@ package miyu.kms.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import miyu.kms.annotations.RequiresRoles;
+import miyu.kms.constant.UserType;
 import miyu.kms.entity.Tenant;
 import miyu.kms.model.ResponseVo;
-import miyu.kms.model.login.req.TenantAddReq;
+import miyu.kms.model.tenant.req.TenantAddReq;
+import miyu.kms.model.tenant.req.TenantUpdateReq;
 import miyu.kms.model.tenant.vo.TenantDetailVO;
 import miyu.kms.model.tenant.vo.TenantListVO;
 import miyu.kms.service.TenantService;
@@ -27,12 +30,14 @@ public class TenantController {
     private TenantService tenantService;
 
     @PostMapping("/tenant")
+    @RequiresRoles({UserType.ADMIN})
     public ResponseVo addTenant(@RequestBody @Validated TenantAddReq tenantAddReq) {
         tenantService.addTenant(tenantAddReq);
         return ResponseVo.createSuccess();
     }
 
     @GetMapping("/tenants")
+    @RequiresRoles({UserType.ADMIN})
     public ResponseVo<TenantListVO> queryTenantPage(@RequestParam @NotNull long page, @RequestParam @NotNull long size) {
         IPage<Tenant> iPage = tenantService.listTenant(page, size);
         int total = tenantService.querySizeOfTenant();
@@ -44,6 +49,21 @@ public class TenantController {
                 .totalSize(total)
                 .build();
         return ResponseVo.createSuccess(listVO);
+    }
+
+    @GetMapping("/tenant/{tenantId}")
+    @RequiresRoles({UserType.ADMIN})
+    public ResponseVo<TenantDetailVO> getTenantDetail(@PathVariable @NotNull Long tenantId){
+        Tenant tenant = tenantService.queryTenantById(tenantId);
+        TenantDetailVO tenantDetailVO = BeanUtil.copyProperties(tenant, TenantDetailVO.class);
+        return ResponseVo.createSuccess(tenantDetailVO);
+    }
+
+    @PutMapping("/tenant")
+    @RequiresRoles({UserType.ADMIN})
+    public ResponseVo updateTenant(@RequestBody TenantUpdateReq tenantUpdateReq){
+        tenantService.updateTenant(tenantUpdateReq);
+        return ResponseVo.createSuccess();
     }
 
 

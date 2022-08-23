@@ -3,7 +3,8 @@ package miyu.kms.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import miyu.kms.entity.Tenant;
 import com.baomidou.mybatisplus.extension.service.IService;
-import miyu.kms.model.login.req.TenantAddReq;
+import miyu.kms.model.tenant.req.TenantAddReq;
+import miyu.kms.model.tenant.req.TenantUpdateReq;
 
 /**
  * @author xudean
@@ -30,4 +31,17 @@ public interface TenantService extends IService<Tenant> {
      * @return
      */
     int querySizeOfTenant();
+
+    /**
+     * 根据id查询租户
+     * @param id
+     * @return
+     */
+    Tenant queryTenantById(Long id);
+
+    /**
+     * 更新租户
+     * @param tenantUpdateReq
+     */
+    void updateTenant(TenantUpdateReq tenantUpdateReq);
 }
