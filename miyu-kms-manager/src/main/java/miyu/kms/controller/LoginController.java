@@ -41,4 +41,5 @@ public class LoginController {
         tokenHandler.removeToken(UserHolder.getUserDTO().getUserId());
         return ResponseVo.createSuccess();
     }
+
 }

@@ -1,0 +1,14 @@
+version: "3.2"
+services:
+  miyu-kms-manager:
+    image: virtuex/miyu-kms-manager:v1.0.0
+    container_name: miyu-kms-manager
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - "DB_HOST:mysql"
+      - "REDIS_HOST:redis"
+    extra_hosts:
+      - "mysql:172.17.0.1"
+      - "redis:172.17.0.1"

@@ -51,7 +51,7 @@ public class UserController {
         return ResponseVo.createSuccess(userListVO);
     }
 
-    @GetMapping("user/{userId}")
+    @GetMapping("/user/{userId}")
     @RequiresRoles(UserType.ADMIN)
     public ResponseVo<UserDetailVO> findUserById(@PathVariable long userId){
         User user = userService.getById(userId);
@@ -59,10 +59,16 @@ public class UserController {
         return ResponseVo.createSuccess(userDetailVO);
     }
 
-    @PutMapping("user")
+    @PutMapping("/user")
     @RequiresRoles(UserType.ADMIN)
     public ResponseVo updateUserById(@RequestBody @Validated UserUpdateReq userUpdateReq){
         userService.updateById(BeanUtil.copyProperties(userUpdateReq,User.class));
         return ResponseVo.createSuccess();
+    }
+
+    @GetMapping("/user/info")
+    @RequiresRoles({UserType.ADMIN,UserType.USER})
+    public ResponseVo<UserDetailVO> getLoginUserInfo(){
+        return ResponseVo.createSuccess(userService.getLoginUserInfo());
     }
 }

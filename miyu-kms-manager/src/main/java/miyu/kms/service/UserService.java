@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import miyu.kms.exceptions.BizException;
 import miyu.kms.model.login.dto.UserLoginDTO;
 import miyu.kms.model.user.dto.UserDetailDTO;
+import miyu.kms.model.user.vo.UserDetailVO;
 
 import java.util.List;
 
@@ -36,4 +37,10 @@ public interface UserService extends IService<User> {
      * @throws BizException
      */
     String login(UserLoginDTO userLoginDTO) throws BizException;
+
+    /**
+     * 获取当前的登录的用户信息
+     * @return
+     */
+    UserDetailVO getLoginUserInfo();
 }

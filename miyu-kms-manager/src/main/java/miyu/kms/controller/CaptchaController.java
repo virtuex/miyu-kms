@@ -41,7 +41,7 @@ public class CaptchaController {
         log.debug("uuid:{},captcha code: {}", uuid, captchaCode);
         // 定义图形验证码的长、宽、验证码字符数、干扰线宽度.
         // 长宽先默认写死
-        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(200, 50);
+        ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(80, 30);
         BufferedImage image = (BufferedImage)captcha.createImage(captchaCode);
 
         // 转换流信息写出

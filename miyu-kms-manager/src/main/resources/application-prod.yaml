@@ -1,6 +1,6 @@
 server:
   # 服务端口
-  port: 8080
+  port: ${SERVER_PORT:8080}
   servlet:
     context-path: /miyu-kms-api
     encoding:
@@ -10,11 +10,11 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # 数据库用户名
-    username: root
+    username: ${DB_USER:root}
     # 数据库密码
-    password: root123
+    password: ${DB_PASSWORD:root123}
     # 数据库连接地址
-    url: jdbc:mysql://127.0.0.1:3306/miyu_kms?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true&failOverReadOnly=false
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:3306/miyu_kms?useUnicode=true&characterEncoding=utf-8&useSSL=false&autoReconnect=true&failOverReadOnly=false
     hikari:
       maximum-pool-size: 30
       minimum-idle: 5
@@ -26,8 +26,8 @@ spring:
     #cluster:
     #nodes: 10.10.8.173:6379,10.10.8.174:6379
     # redis单机配置, 默认单节点
-    host: 127.0.0.1
-    port: 6379
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
     # redis密码
     password:
     timeout: 60000
@@ -37,4 +37,4 @@ spring:
 miyu:
   kms:
     config:
-      is-check-code: false
+      is-check-code: ${IS_CHECK_CODE:false}
