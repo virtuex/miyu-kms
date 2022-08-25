@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import miyu.kms.config.system.MiyuKmsConfig;
 import miyu.kms.entity.User;
 import miyu.kms.exceptions.BizException;
 import miyu.kms.handler.CaptchaHandler;
@@ -42,9 +43,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Resource
     private TokenHandler tokenHandler;
-    @Value("${miyu.kms.config.is-check-code}")
-    private Boolean isCheckCaptchaCode = true;
 
+    @Resource
+    private MiyuKmsConfig miyuKmsConfig;
     @Override
     public List<UserDetailDTO> listUsers(long page, long size, long tenantId) {
         IPage<User> iPage = new Page<User>(page, size);
@@ -61,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     public String login(UserLoginDTO userLoginDTO) throws BizException {
         // step 1: 校验验证码
-        if (isCheckCaptchaCode) {
+        if (miyuKmsConfig.getCaptchaConfig().isCheckCode()) {
             checkCaptchaCode(userLoginDTO.getUuid(), userLoginDTO.getCaptchaCode());
         }
         // step2: 校验密码

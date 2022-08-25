@@ -34,7 +34,12 @@ spring:
     lettuce:
       pool:
         max-active: 100
-miyu:
-  kms:
+miyu-kms:
     config:
-      is-check-code: ${IS_CHECK_CODE:false}
+      captcha-config:
+        # 验证码长度, 默认4位
+        length: 4
+        # 验证码过期时间(单位: 分钟), 默认5分钟
+        expire-time: 5
+        #      开启验证码  on 开启/off 关闭
+        check-code: off
