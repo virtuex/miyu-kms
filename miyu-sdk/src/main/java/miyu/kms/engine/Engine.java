@@ -6,7 +6,7 @@ import miyu.kms.constants.SymmAlgo;
 import miyu.kms.domain.EMSecretKey;
 import miyu.kms.domain.EncryptSecretKey;
 import miyu.kms.domain.HsmConfig;
-import miyu.kms.exceptions.HsmException;
+import miyu.kms.exceptions.CryptoException;
 
 import javax.crypto.SecretKey;
 import java.security.KeyPair;
@@ -38,31 +38,31 @@ public interface Engine {
 	 * 初始化Engine 传入Engine使用的基本变量，如加密机类型，IP地址，端口号
 	 *
 	 * @param params
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public void initEngine(HsmConfig params) throws HsmException;
+	public void initEngine(HsmConfig params) throws CryptoException;
 
 	/**
 	 * 重新初始化Engine 传入Engine使用的基本变量，如加密机类型，IP地址，端口号
 	 *
 	 * @param params
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public void reinitEngine(HsmConfig params) throws HsmException;
+	public void reinitEngine(HsmConfig params) throws CryptoException;
 
 	/**
 	 * 重新初始化Engine 传入Engine使用的基本变量，IP地址，端口号，不改变类型
 	 *
 	 * @param ip
 	 * @param port
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public void reinitEngine(String ip, int port) throws HsmException;
+	public void reinitEngine(String ip, int port) throws CryptoException;
 
 	/**
 	 * 生成指定密钥类型用户密钥对
 	 */
-	public KeyPair genKeyPair(KeyType type) throws HsmException;
+	public KeyPair genKeyPair(KeyType type) throws CryptoException;
 
 	/**
 	 * 根据指定密钥长度生成密钥对
@@ -70,9 +70,9 @@ public interface Engine {
 	 * @param length
 	 *            ，密钥长度，只支持512,1024,2048
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public KeyPair genKeyPair(int length) throws HsmException;
+	public KeyPair genKeyPair(int length) throws CryptoException;
 
 	/**
 	 * 得到所有保存在加密设备中的非对称密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -80,9 +80,9 @@ public interface Engine {
 	 * 保存到一个静态变量中 把复使用即可。 同时，该函数返回的密钥对数组，其顺序是根据加密机保存密钥对的位置顺序来调用的。
 	 *
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public KeyPair[] getAllKeyPairStoreInEm() throws HsmException;
+	public KeyPair[] getAllKeyPairStoreInEm() throws CryptoException;
 
 	/**
 	 * 获取加密机中，指定密钥类型的所有密钥对。其中硬件加密机时，私钥为加密机的句柄(索引)。
@@ -90,9 +90,9 @@ public interface Engine {
 	 * @param type
 	 *            密钥类型
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public KeyPair[] getAllKeyPairStoreInEm(KeyType type) throws HsmException;
+	public KeyPair[] getAllKeyPairStoreInEm(KeyType type) throws CryptoException;
 
 	/**
 	 * 获取加密设备中已经存在的指定位置的密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -101,9 +101,9 @@ public interface Engine {
 	 * @param index
 	 *            加密机主密钥的索引值
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public KeyPair getKeyPair(int index) throws HsmException;
+	public KeyPair getKeyPair(int index) throws CryptoException;
 
 	/**
 	 * 获取加密设备中已经存在的指定位置的密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -111,18 +111,18 @@ public interface Engine {
 	 *
 	 * @param pubKey
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public KeyPair getKeyPair(PublicKey pubKey) throws HsmException;
+	public KeyPair getKeyPair(PublicKey pubKey) throws CryptoException;
 
 	/**
 	 * 使用公钥的KeyId来获得指定位置的密钥对 KeyId名,即公钥SHA-1摘要B64编码的小写字符串的byte编码
 	 *
 	 * @param pubKeyId
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public KeyPair getKeyPair(byte[] pubKeyId) throws HsmException;
+	public KeyPair getKeyPair(byte[] pubKeyId) throws CryptoException;
 
 	/**
 	 * 公钥加密
@@ -130,9 +130,9 @@ public interface Engine {
 	 * @param pubKeyBytes
 	 * @param data
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] pubEnc(byte[] pubKeyBytes, byte[] data) throws HsmException;
+	public byte[] pubEnc(byte[] pubKeyBytes, byte[] data) throws CryptoException;
 
 	/**
 	 * 公钥加密
@@ -140,9 +140,9 @@ public interface Engine {
 	 * @param pubKey
 	 * @param data
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] pubEnc(PublicKey pubKey, byte[] data) throws HsmException;
+	public byte[] pubEnc(PublicKey pubKey, byte[] data) throws CryptoException;
 
 	/**
 	 * 私钥解密
@@ -150,9 +150,9 @@ public interface Engine {
 	 * @param prvKeyBytes
 	 * @param data
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] priDec(byte[] prvKeyBytes, byte[] data) throws HsmException;
+	public byte[] priDec(byte[] prvKeyBytes, byte[] data) throws CryptoException;
 
 	/**
 	 * 私钥解密
@@ -160,9 +160,9 @@ public interface Engine {
 	 * @param prvKey
 	 * @param data
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] priDec(PrivateKey prvKey, byte[] data) throws HsmException;
+	public byte[] priDec(PrivateKey prvKey, byte[] data) throws CryptoException;
 
 	/**
 	 * 签名
@@ -170,9 +170,9 @@ public interface Engine {
 	 * @param prvKeyBytes
 	 * @param data
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] sign(byte[] prvKeyBytes, byte[] data) throws HsmException;
+	public byte[] sign(byte[] prvKeyBytes, byte[] data) throws CryptoException;
 
 	/**
 	 * 签名
@@ -182,10 +182,10 @@ public interface Engine {
 	 * @param sigAlgName
 	 *            签名算法
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] sign(byte[] prvKeyBytes, byte[] data, String sigAlgName)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 签名
@@ -193,9 +193,9 @@ public interface Engine {
 	 * @param prvKey
 	 * @param data
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] sign(PrivateKey prvKey, byte[] data) throws HsmException;
+	public byte[] sign(PrivateKey prvKey, byte[] data) throws CryptoException;
 
 	/**
 	 * 签名
@@ -205,10 +205,10 @@ public interface Engine {
 	 * @param sigAlgName
 	 *            签名算法
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] sign(PrivateKey prvKey, byte[] data, String sigAlgName)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 签名
@@ -217,10 +217,10 @@ public interface Engine {
 	 * @param sigAlgName 签名算法
 	 * @param sm3UID SM3带公钥ID运算需要的UID
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] sign(PrivateKey prvKey, byte[] data, String sigAlgName, byte[] sm3UID)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 验证
@@ -229,10 +229,10 @@ public interface Engine {
 	 * @param data
 	 * @param sigBytes
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public boolean verify(byte[] pubKeyBytes, byte[] data, byte[] sigBytes)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 验证
@@ -243,10 +243,10 @@ public interface Engine {
 	 * @param sigAlgName
 	 *            签名算法
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public boolean verify(byte[] pubKeyBytes, byte[] data, byte[] sigBytes,
-			String sigAlgName) throws HsmException;
+			String sigAlgName) throws CryptoException;
 
 	/**
 	 * 验证
@@ -255,10 +255,10 @@ public interface Engine {
 	 * @param data
 	 * @param sigBytes
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public boolean verify(PublicKey pubKey, byte[] data, byte[] sigBytes)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 验证
@@ -269,10 +269,10 @@ public interface Engine {
 	 * @param sigAlgName
 	 *            签名算法
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public boolean verify(PublicKey pubKey, byte[] data, byte[] sigBytes,
-			String sigAlgName) throws HsmException;
+			String sigAlgName) throws CryptoException;
 
 	/**
 	 * 验证
@@ -282,10 +282,10 @@ public interface Engine {
 	 * @param sigAlgName 签名算法
 	 * @param sm3UID SM3带公钥ID运算需要的UID
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public boolean verify(PublicKey pubKey, byte[] data, byte[] sigBytes,
-			String sigAlgName, byte[] sm3UID) throws HsmException;
+			String sigAlgName, byte[] sm3UID) throws CryptoException;
 
 	/**
 	 * 获取随机数
@@ -294,17 +294,17 @@ public interface Engine {
 	 *            随机数长度,其长度输入值受限，如SJY15时该值不能超过1528
 	 *
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public byte[] getRandom(int nRndLength) throws HsmException;
+	public byte[] getRandom(int nRndLength) throws CryptoException;
 
 	/**
 	 * 根据传入的buffer长度，填入随机数
 	 *
 	 * @param buffer
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public void getRandom(byte[] buffer) throws HsmException;
+	public void getRandom(byte[] buffer) throws CryptoException;
 
 	/**
 	 * 生成对称密钥,不同的加密设备表现可能不同？如SJY15只能导出被主密钥加密的工作密钥？
@@ -312,32 +312,32 @@ public interface Engine {
 	 * @param symmAlgName
 	 *            对称加密算法，如Des，SSF33
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public SecretKey genSymmetricKey(String symmAlgName) throws HsmException;
+	public SecretKey genSymmetricKey(String symmAlgName) throws CryptoException;
 
 	/**
 	 * 列出所有保存在加密机中的对称密钥对（SJY15好象不保存任何这种值）
 	 *
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public SecretKey[] getAllSymmetricKeyStoreInEm() throws HsmException;
+	public SecretKey[] getAllSymmetricKeyStoreInEm() throws CryptoException;
 
 	/**
 	 * 删除所有保存在加密机中的对称密钥对
 	 *
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public void delAllSymmetricKeyStoreInEm() throws HsmException;
+	public void delAllSymmetricKeyStoreInEm() throws CryptoException;
 
 	/**
 	 * 删除保存在加密机中的指定对称密钥对
 	 *
 	 * @param key
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public void delSymmetricKeyStoreInEm(SecretKey key) throws HsmException;
+	public void delSymmetricKeyStoreInEm(SecretKey key) throws CryptoException;
 
 	/**
 	 * 将指定算法的对称密钥对导入到加密机中保存， 用于调用指定算法（如SSF33）进行数字信封的解密
@@ -347,19 +347,19 @@ public interface Engine {
 	 * @param symmAlgName
 	 *            加密算法
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public SecretKey importSymmetricKeyStoreInEm(byte[] mainKeyValue,
-			String symmAlgName) throws HsmException;
+			String symmAlgName) throws CryptoException;
 
 	/**
 	 * 导出加密保护的KM业务主密钥
 	 *
 	 * @return
 	 *
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
-	public EncryptSecretKey exportMainKey() throws HsmException;
+	public EncryptSecretKey exportMainKey() throws CryptoException;
 
 	/**
 	 * 导入受保护的KMC业务主密钥
@@ -373,10 +373,10 @@ public interface Engine {
 	 * @param pubkeyAlias
 	 *            用于保护主密钥公钥的公钥ID
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public SecretKey importMainKey(String mainKeyValue, String symmAlgName,
-			String refValue, String pubkeyAlias) throws HsmException;
+			String refValue, String pubkeyAlias) throws CryptoException;
 
 	/**
 	 * 对称密钥加密
@@ -388,10 +388,10 @@ public interface Engine {
 	 * @param symmAlgName
 	 *            加密算法,传入时必须使用"算法/加密方式/填充方法"，如"DES/ECB/PKCS5Padding"
 	 * @return 加密出的密文
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] symmetricEnc(SecretKey key, byte[] data, String symmAlgName)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 对称密钥加密
@@ -403,10 +403,10 @@ public interface Engine {
 	 * @param symmAlgName
 	 *            加密算法,传入时必须使用"算法/加密方式/填充方法"，如"DES/ECB/PKCS5Padding"
 	 * @return 加密出的密文
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] symmetricEnc(byte[] keyValue, byte[] data, String symmAlgName)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 对称密钥解密
@@ -418,10 +418,10 @@ public interface Engine {
 	 * @param symmAlgName
 	 *            加密算法,传入时必须使用"算法/加密方式/填充方法"，如"DES/ECB/PKCS5Padding"
 	 * @return 解密出的密文
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] symmetricDec(SecretKey key, byte[] data, String symmAlgName)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 对称密钥解密
@@ -433,10 +433,10 @@ public interface Engine {
 	 * @param symmAlgName
 	 *            加密算法,传入时必须使用"算法/加密方式/填充方法"，如"DES/ECB/PKCS5Padding"
 	 * @return 解密出的密文
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] symmetricDec(byte[] keyValue, byte[] data, String symmAlgName)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 根据指定的密钥对和DN对象生成PKCS10请求，使用ECC时请务必调用此方法
@@ -446,10 +446,10 @@ public interface Engine {
 	 * @param sigAlgName
 	 *            签名算法
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public byte[] genPKCS10Req(KeyPair keyPair, String subjectDN,
-			String sigAlgName) throws HsmException;
+			String sigAlgName) throws CryptoException;
 
 	/**
 	 * 检查公私钥对是否匹配
@@ -502,7 +502,7 @@ public interface Engine {
 	 * @return 存储了加密数据和句柄的主密钥
 	 */
 	public EMSecretKey GenerateKeyWithIPK(int keyIndex, int bytesLen)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 导入会话密钥并用内部私钥解密，同时返回密钥句柄<br>
@@ -515,10 +515,10 @@ public interface Engine {
 	 *            非对称密钥索引
 	 * @param encryptedContent 被加密的对称密钥
 	 * @return 存储了加密数据和句柄的主密钥
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public EMSecretKey ImportKeyWithISK(int keyIndex, byte[] encryptedContent)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 本函数主要用于会话密钥的生成，生成会话密钥并用外部ECC公钥加密输出
@@ -531,10 +531,10 @@ public interface Engine {
 	 * @param bytesLen
 	 *            密钥字节长，注意是byte而不是bit
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public EMSecretKey GenerateKeyWithEPK(PublicKey pubKey, int bytesLen)
-			throws HsmException;
+			throws CryptoException;
 
 	/**
 	 * 生成会话密钥并用密钥加密密钥加密输出，同时返回密钥句柄<br>
@@ -552,10 +552,10 @@ public interface Engine {
 	 * @param bytesLen
 	 *            密钥字节长，注意是byte而不是bit
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public EMSecretKey GenerateKeyWithKEK(SymmAlgo algo, int keyIndex,
-			int bytesLen) throws HsmException;
+			int bytesLen) throws CryptoException;
 
 	/**
 	 * 导入会话密钥并用密钥加密密钥解密，同时返回会话密钥句柄<br>
@@ -572,10 +572,10 @@ public interface Engine {
 	 *            对称密钥索引
 	 * @param encryptedContent 被加密的对称密钥
 	 * @return
-	 * @throws HsmException
+	 * @throws CryptoException
 	 */
 	public EMSecretKey ImportKeyWithKEK(SymmAlgo algo, int keyIndex,
-			byte[] encryptedContent) throws HsmException;
+			byte[] encryptedContent) throws CryptoException;
 
 	public static class RSADefAlgo {
 
