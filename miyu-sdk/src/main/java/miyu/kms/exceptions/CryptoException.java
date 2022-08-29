@@ -19,6 +19,11 @@ public class CryptoException extends RuntimeException {
         this.code = code;
         this.msg = msg;
     }
+    public CryptoException(CryptoExpCode code, String msg) {
+        super(msg);
+        this.code = code.getCode();
+        this.msg = msg;
+    }
     public int getCode() {
         return code;
     }

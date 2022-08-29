@@ -5,15 +5,21 @@ plugins {
 group 'com.miyu'
 version '1.0-SNAPSHOT'
 
+ext {
+    hutoolVersion = '5.8.5'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    // https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on
+    implementation group: 'cn.hutool', name: 'hutool-core', version: "$hutoolVersion"
+    implementation group: 'cn.hutool', name: 'hutool-crypto',  version: "$hutoolVersion"
     implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'junit:junit:4.13.1'
 }
 
 test {
