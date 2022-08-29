@@ -1,11 +1,9 @@
 package miyu.kms.engine.impl;
 
-import miyu.kms.domain.HsmConfig;
 import miyu.kms.domain.config.FileEngineConfig;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.IOException;
+import java.security.KeyPair;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
@@ -18,6 +16,8 @@ public class FileEngineTest {
         fileEngineConfig.setUser("xuda");
         fileEngineConfig.setPath("/home/xudean/myworkspace/miyu-kms/miyu-sdk");
         fileEngine.initEngine(fileEngineConfig);
+        KeyPair keyPair = fileEngine.genKeyPair("RSA");
+        System.out.println();
     }
 
 

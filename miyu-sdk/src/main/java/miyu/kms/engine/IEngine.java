@@ -1,7 +1,6 @@
 package miyu.kms.engine;
 
 import miyu.kms.constants.EngineType;
-import miyu.kms.constants.KeyType;
 import miyu.kms.constants.SymmAlgo;
 import miyu.kms.domain.EMSecretKey;
 import miyu.kms.domain.EncryptSecretKey;
@@ -9,7 +8,6 @@ import miyu.kms.domain.HsmConfig;
 import miyu.kms.exceptions.CryptoException;
 
 import javax.crypto.SecretKey;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
@@ -63,7 +61,7 @@ public interface IEngine {
 	/**
 	 * 生成指定密钥类型用户密钥对
 	 */
-	KeyPair genKeyPair(KeyType type) throws CryptoException;
+	KeyPair genKeyPair(String algorithm) throws CryptoException;
 
 	/**
 	 * 根据指定密钥长度生成密钥对
@@ -88,12 +86,12 @@ public interface IEngine {
 	/**
 	 * 获取加密机中，指定密钥类型的所有密钥对。其中硬件加密机时，私钥为加密机的句柄(索引)。
 	 *
-	 * @param type
+	 * @param algorithm
 	 *            密钥类型
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair[] getAllKeyPairStoreInEm(KeyType type) throws CryptoException;
+	KeyPair[] getAllKeyPairStoreInEm(String algorithm) throws CryptoException;
 
 	/**
 	 * 获取加密设备中已经存在的指定位置的密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -479,7 +477,7 @@ public interface IEngine {
 	/**
 	 * 枚举支持的非对称密钥类型
 	 */
-	KeyType[] enumKeyType();
+	String[] enumKeyType();
 
 	/**
 	 * 枚举支持的对称算法类型

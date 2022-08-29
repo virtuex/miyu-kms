@@ -11,11 +11,14 @@ public enum CryptoExpCode {
      * 参数错误
      */
     PARAM_ERROR(1001),
-    KEY_STORE_ERROR(1002);
+    KEY_STORE_ERROR(1002),
+    CRYPTO_ERROR(1003);
     int code;
-    CryptoExpCode(int code){
+
+    CryptoExpCode(int code) {
         this.code = code;
     }
+
     public int getCode() {
         return code;
     }
