@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.miyu'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 ext {
     hutoolVersion = '5.8.5'

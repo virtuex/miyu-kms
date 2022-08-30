@@ -1,1 +1,3 @@
 rootProject.name = 'miyu-kms-engine'
+include ':miyu-sdk'
+project(':miyu-sdk').projectDir = new File(settingsDir, '../miyu-sdk')
