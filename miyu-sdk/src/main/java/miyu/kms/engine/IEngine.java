@@ -1,7 +1,7 @@
 package miyu.kms.engine;
 
 import miyu.kms.constants.EngineType;
-import miyu.kms.constants.SymmAlgo;
+import miyu.kms.domain.EMSKeyPair;
 import miyu.kms.domain.EMSecretKey;
 import miyu.kms.domain.EncryptSecretKey;
 import miyu.kms.domain.HsmConfig;
@@ -61,7 +61,7 @@ public interface IEngine {
 	/**
 	 * 生成指定密钥类型用户密钥对
 	 */
-	KeyPair genKeyPair(String algorithm) throws CryptoException;
+	EMSKeyPair genKeyPair(String algorithm) throws CryptoException;
 
 	/**
 	 * 根据指定密钥长度生成密钥对
@@ -71,7 +71,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair genKeyPair(int length) throws CryptoException;
+	EMSKeyPair genKeyPair(int length) throws CryptoException;
 
 	/**
 	 * 得到所有保存在加密设备中的非对称密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -81,7 +81,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair[] getAllKeyPairStoreInEm() throws CryptoException;
+	EMSKeyPair[] getAllKeyPairStoreInEm() throws CryptoException;
 
 	/**
 	 * 获取加密机中，指定密钥类型的所有密钥对。其中硬件加密机时，私钥为加密机的句柄(索引)。
@@ -91,7 +91,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair[] getAllKeyPairStoreInEm(String algorithm) throws CryptoException;
+	EMSKeyPair[] getAllKeyPairStoreInEm(String algorithm) throws CryptoException;
 
 	/**
 	 * 获取加密设备中已经存在的指定位置的密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -102,7 +102,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair getKeyPair(int index) throws CryptoException;
+	EMSKeyPair getKeyPair(String index) throws CryptoException;
 
 	/**
 	 * 获取加密设备中已经存在的指定位置的密钥对，对于文件设备，私钥是正常私钥值，对于硬件加密设备 ，
@@ -112,7 +112,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair getKeyPair(PublicKey pubKey) throws CryptoException;
+	EMSKeyPair getKeyPair(PublicKey pubKey) throws CryptoException;
 
 	/**
 	 * 使用公钥的KeyId来获得指定位置的密钥对 KeyId名,即公钥SHA-1摘要B64编码的小写字符串的byte编码
@@ -121,7 +121,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	KeyPair getKeyPair(byte[] pubKeyId) throws CryptoException;
+	EMSKeyPair getKeyPair(byte[] pubKeyId) throws CryptoException;
 
 	/**
 	 * 公钥加密
@@ -313,7 +313,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	SecretKey genSymmetricKey(String symmAlgName) throws CryptoException;
+	EMSecretKey genSymmetricKey(String symmAlgName) throws CryptoException;
 
 	/**
 	 * 列出所有保存在加密机中的对称密钥对（SJY15好象不保存任何这种值）
@@ -321,7 +321,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	SecretKey[] getAllSymmetricKeyStoreInEm() throws CryptoException;
+	EMSecretKey[] getAllSymmetricKeyStoreInEm() throws CryptoException;
 
 	/**
 	 * 删除所有保存在加密机中的对称密钥对
@@ -348,7 +348,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	SecretKey importSymmetricKeyStoreInEm(byte[] mainKeyValue,
+	EMSecretKey importSymmetricKeyStoreInEm(byte[] mainKeyValue,
 			String symmAlgName) throws CryptoException;
 
 	/**
@@ -374,7 +374,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	SecretKey importMainKey(String mainKeyValue, String symmAlgName,
+	EMSecretKey importMainKey(String mainKeyValue, String symmAlgName,
 			String refValue, String pubkeyAlias) throws CryptoException;
 
 	/**
@@ -482,7 +482,7 @@ public interface IEngine {
 	/**
 	 * 枚举支持的对称算法类型
 	 */
-	SymmAlgo[] enumSymmAlgo();
+	String[] enumSymmAlgo();
 
 	/**
 	 * 生成会话密钥并用指定索引的内部加密公钥加密输出<br>
@@ -553,7 +553,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	EMSecretKey GenerateKeyWithKEK(SymmAlgo algo, int keyIndex,
+	EMSecretKey GenerateKeyWithKEK(String algo, int keyIndex,
 			int bytesLen) throws CryptoException;
 
 	/**
@@ -573,7 +573,7 @@ public interface IEngine {
 	 * @return
 	 * @throws CryptoException
 	 */
-	EMSecretKey ImportKeyWithKEK(SymmAlgo algo, int keyIndex,
+	EMSecretKey ImportKeyWithKEK(String algo, int keyIndex,
 			byte[] encryptedContent) throws CryptoException;
 
 

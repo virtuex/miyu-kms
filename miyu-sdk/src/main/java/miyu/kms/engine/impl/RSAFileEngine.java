@@ -1,14 +1,18 @@
 package miyu.kms.engine.impl;
 
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.compiler.DiagnosticUtil;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.KeyUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.crypto.asymmetric.RSA;
 import cn.hutool.crypto.asymmetric.Sign;
 import cn.hutool.crypto.asymmetric.SignAlgorithm;
+import cn.hutool.crypto.digest.DigestUtil;
 import miyu.kms.constants.EngineType;
-import miyu.kms.constants.SymmAlgo;
+import miyu.kms.domain.EMSKeyPair;
 import miyu.kms.domain.EMSecretKey;
 import miyu.kms.domain.EncryptSecretKey;
 import miyu.kms.domain.HsmConfig;
@@ -16,12 +20,23 @@ import miyu.kms.domain.config.FileEngineConfig;
 import miyu.kms.engine.IEngine;
 import miyu.kms.exceptions.CryptoException;
 import miyu.kms.exceptions.CryptoExpCode;
+import miyu.kms.utils.CertUtils;
+import miyu.kms.utils.X500NameInfo;
+import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
+import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
+import java.nio.charset.Charset;
 import java.security.*;
+import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
-import java.security.spec.InvalidKeySpecException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * @author : xudean
@@ -29,10 +44,11 @@ import java.security.spec.InvalidKeySpecException;
  * @Description: 基于keystore的文件加密机
  * @date Date : 2022年08月29日 上午11:26
  */
-public class FileEngine implements IEngine {
+public class RSAFileEngine implements IEngine {
 
     private static final String DEFAULT_KEYSTORE_PASSWORD = "Xuda@123456";
     private KeyStore keyStore;
+    private String keyStorePath;
 
 
     private String getKeyStorePath(FileEngineConfig fileEngineConfig) {
@@ -50,12 +66,8 @@ public class FileEngine implements IEngine {
         if (StrUtil.isEmpty(params.getUser()) || StrUtil.isEmpty((((FileEngineConfig) params).getPath()))) {
             throw new CryptoException(CryptoExpCode.PARAM_ERROR, "user or path is needed");
         }
-        if (FileUtil.exist(getKeyStorePath((FileEngineConfig) params))) {
-            //如果已经存在就什么都不做
-            return;
-        }
         try {
-            keyStore = createKeyStore(params);
+            keyStore = initKeyStore(params);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -82,29 +94,48 @@ public class FileEngine implements IEngine {
     }
 
     @Override
-    public KeyPair genKeyPair(String algorithm) throws CryptoException {
+    public EMSKeyPair genKeyPair(String algorithm) throws CryptoException {
+        KeyPair keyPair = KeyUtil.generateKeyPair(algorithm, 2048);
+        saveKeyPairInKeystore(keyPair);
         //应该把私钥存起来，只返回公钥和私钥对应的索引。先都返回，再优化
-        return KeyUtil.generateKeyPair(algorithm);
+        return EMSKeyPair.buildEmsKeyPair(keyPair);
     }
 
     @Override
-    public KeyPair genKeyPair(int length) throws CryptoException {
+    public EMSKeyPair genKeyPair(int length) throws CryptoException {
+        KeyPair keyPair = KeyUtil.generateKeyPair("RSA", length);
+        saveKeyPairInKeystore(keyPair);
 //        默认创建一个RSA的
-        return KeyUtil.generateKeyPair("RSA");
+        return EMSKeyPair.buildEmsKeyPair(keyPair);
     }
 
     @Override
-    public KeyPair[] getAllKeyPairStoreInEm() throws CryptoException {
+    public EMSKeyPair[] getAllKeyPairStoreInEm() throws CryptoException {
         ///空实现
-        return new KeyPair[0];
+        List<EMSKeyPair> emsKeyPairs = new ArrayList<>();
+        try {
+            Enumeration<String> aliases = keyStore.aliases();
+            while (aliases.hasMoreElements()) {
+                String s = aliases.nextElement();
+                EMSKeyPair emsKeyPair = new EMSKeyPair();
+                emsKeyPair.setAlias(s);
+                emsKeyPairs.add(emsKeyPair);
+            }
+        } catch (KeyStoreException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ArrayUtil.toArray(emsKeyPairs, EMSKeyPair.class);
     }
 
     @Override
-    public KeyPair[] getAllKeyPairStoreInEm(String type) throws CryptoException {
-        return new KeyPair[0];
+    public EMSKeyPair[] getAllKeyPairStoreInEm(String type) throws CryptoException {
+        //这里默认就返回RSA
+        return getAllKeyPairStoreInEm();
     }
 
     /**
+     * 对于文件加密机而言，因为无法在加密机内部运算，所以需要先把私钥读取出来，然后再计算
      * index是索引值，如果需要根据字符串类型找，那么就用string.hashcode
      *
      * @param index 加密机主密钥的索引值
@@ -112,18 +143,30 @@ public class FileEngine implements IEngine {
      * @throws CryptoException
      */
     @Override
-    public KeyPair getKeyPair(int index) throws CryptoException {
-        return null;
+    public EMSKeyPair getKeyPair(String index) throws CryptoException {
+        KeyPair keyPair = KeyUtil.getKeyPair(keyStore, DEFAULT_KEYSTORE_PASSWORD.toCharArray(), index + "");
+        EMSKeyPair emsKeyPair = EMSKeyPair.buildEmsKeyPair(keyPair);
+        emsKeyPair.setPrivateKey(keyPair.getPrivate());
+        return emsKeyPair;
     }
 
     @Override
-    public KeyPair getKeyPair(PublicKey pubKey) throws CryptoException {
-        return null;
+    public EMSKeyPair getKeyPair(PublicKey pubKey) throws CryptoException {
+        String index = Base64.encode(DigestUtil.sha1(pubKey.getEncoded()));
+        return getKeyPair(index);
     }
 
+    /**
+     * 对文件加密机来说，这个keyId就是key的byte[]
+     *
+     * @param pubKeyId
+     * @return
+     * @throws CryptoException
+     */
     @Override
-    public KeyPair getKeyPair(byte[] pubKeyId) throws CryptoException {
-        return null;
+    public EMSKeyPair getKeyPair(byte[] pubKeyId) throws CryptoException {
+        PublicKey publicKey = KeyUtil.generateRSAPublicKey(pubKeyId);
+        return getKeyPair(publicKey);
     }
 
     @Override
@@ -153,7 +196,7 @@ public class FileEngine implements IEngine {
 
     /**
      * 签名算法参考{@link SignAlgorithm}
-     *
+     *K
      * @param prvKeyBytes
      * @param data
      * @return
@@ -190,24 +233,24 @@ public class FileEngine implements IEngine {
 
     @Override
     public boolean verify(byte[] pubKeyBytes, byte[] data, byte[] sigBytes) throws CryptoException {
-        return verify(pubKeyBytes,data,sigBytes,"SHA256withRSA");
+        return verify(pubKeyBytes, data, sigBytes, "SHA256withRSA");
     }
 
     @Override
     public boolean verify(byte[] pubKeyBytes, byte[] data, byte[] sigBytes, String sigAlgName) throws CryptoException {
         Sign sign = new Sign(sigAlgName, null, pubKeyBytes);
-        return sign.verify(data,sigBytes);
+        return sign.verify(data, sigBytes);
     }
 
     @Override
     public boolean verify(PublicKey pubKey, byte[] data, byte[] sigBytes) throws CryptoException {
-        return verify(pubKey,data,sigBytes,"SHA256withRSA");
+        return verify(pubKey, data, sigBytes, "SHA256withRSA");
     }
 
     @Override
     public boolean verify(PublicKey pubKey, byte[] data, byte[] sigBytes, String sigAlgName) throws CryptoException {
         Sign sign = new Sign(sigAlgName, null, pubKey);
-        return sign.verify(data,sigBytes);
+        return sign.verify(data, sigBytes);
     }
 
     @Override
@@ -228,13 +271,15 @@ public class FileEngine implements IEngine {
     }
 
     @Override
-    public SecretKey genSymmetricKey(String symmAlgName) throws CryptoException {
-        return KeyUtil.generateKey(symmAlgName);
+    public EMSecretKey genSymmetricKey(String symmAlgName) throws CryptoException {
+        SecretKey secretKey = KeyUtil.generateKey(symmAlgName);
+        return EMSecretKey.buildEMSSecretKey(secretKey);
     }
 
     @Override
-    public SecretKey[] getAllSymmetricKeyStoreInEm() throws CryptoException {
-        return new SecretKey[0];
+    public EMSecretKey[] getAllSymmetricKeyStoreInEm() throws CryptoException {
+        //存储在加密机里的对称密钥，这里返回空
+        return new EMSecretKey[0];
     }
 
     @Override
@@ -248,7 +293,7 @@ public class FileEngine implements IEngine {
     }
 
     @Override
-    public SecretKey importSymmetricKeyStoreInEm(byte[] mainKeyValue, String symmAlgName) throws CryptoException {
+    public EMSecretKey importSymmetricKeyStoreInEm(byte[] mainKeyValue, String symmAlgName) throws CryptoException {
         return null;
     }
 
@@ -258,8 +303,14 @@ public class FileEngine implements IEngine {
     }
 
     @Override
-    public SecretKey importMainKey(String mainKeyValue, String symmAlgName, String refValue, String pubkeyAlias) throws CryptoException {
-        return null;
+    public EMSecretKey importMainKey(String mainKeyValue, String symmAlgName, String refValue, String pubkeyAlias) throws CryptoException {
+        byte[] decode = Base64.decode(mainKeyValue);
+        SecretKey originalKey = new SecretKeySpec(decode, 0, decode.length, symmAlgName);
+        saveSecretKeyInKeystore(originalKey);
+        EMSecretKey emSecretKey = new EMSecretKey();
+        emSecretKey.setSecretKey(originalKey);
+        emSecretKey.setAlias(generateSecretKeyAlias(originalKey));
+        return emSecretKey;
     }
 
     @Override
@@ -284,37 +335,49 @@ public class FileEngine implements IEngine {
 
     @Override
     public byte[] genPKCS10Req(KeyPair keyPair, String subjectDN, String sigAlgName) throws CryptoException {
-        return new byte[0];
+        PKCS10CertificationRequest certRequest = CertUtils.createCertRequest(sigAlgName, subjectDN, keyPair.getPublic(), keyPair.getPrivate());
+        byte[] encoded;
+        try {
+            encoded = certRequest.getEncoded();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return encoded;
     }
 
     @Override
     public boolean checkPair(PublicKey pubKey, PrivateKey prvKey) {
+        byte[] bytes = pubEnc(pubKey, "123".getBytes(Charset.defaultCharset()));
+        byte[] plainText = priDec(prvKey, bytes);
+        if ("123".equals(new String(plainText))) {
+            return true;
+        }
         return false;
     }
 
     @Override
     public String getVersionDesc() {
-        return null;
+        return "RSA版本文件加密机";
     }
 
     @Override
     public EngineType getType() {
-        return null;
+        return EngineType.FILE;
     }
 
     @Override
     public String getEngineDesc() {
-        return null;
+        return EngineType.FILE.getDesc();
     }
 
     @Override
     public String[] enumKeyType() {
-        return new String[0];
+        return new String[]{"RSA"};
     }
 
     @Override
-    public SymmAlgo[] enumSymmAlgo() {
-        return new SymmAlgo[0];
+    public String[] enumSymmAlgo() {
+        return new String[]{"AES", "DES"};
     }
 
     @Override
@@ -333,19 +396,20 @@ public class FileEngine implements IEngine {
     }
 
     @Override
-    public EMSecretKey GenerateKeyWithKEK(SymmAlgo algo, int keyIndex, int bytesLen) throws CryptoException {
+    public EMSecretKey GenerateKeyWithKEK(String algo, int keyIndex, int bytesLen) throws CryptoException {
         return null;
     }
 
     @Override
-    public EMSecretKey ImportKeyWithKEK(SymmAlgo algo, int keyIndex, byte[] encryptedContent) throws CryptoException {
+    public EMSecretKey ImportKeyWithKEK(String algo, int keyIndex, byte[] encryptedContent) throws CryptoException {
         return null;
     }
 
 
-    public KeyStore createKeyStore(HsmConfig hsmConfig) throws Exception {
-        File file = new File(getKeyStorePath((FileEngineConfig) hsmConfig));
-        KeyStore keyStore = KeyStore.getInstance("JKS");
+    public KeyStore initKeyStore(HsmConfig hsmConfig) throws Exception {
+        keyStorePath = getKeyStorePath((FileEngineConfig) hsmConfig);
+        File file = new File(keyStorePath);
+        KeyStore keyStore = KeyStore.getInstance("JCEKS");
         if (file.exists()) {
             // if exists, load
             keyStore.load(new FileInputStream(file), DEFAULT_KEYSTORE_PASSWORD.toCharArray());
@@ -357,4 +421,39 @@ public class FileEngine implements IEngine {
         }
         return keyStore;
     }
+
+    private void saveKeyPairInKeystore(KeyPair keyPair) {
+        int hashCode = keyPair.getPublic().hashCode();
+        X500NameInfo x500NameInfo = new X500NameInfo();
+        x500NameInfo.setCommonName(hashCode + "");
+        X509Certificate rootCertificate = CertUtils.createRootCertificate(SignAlgorithm.SHA256withRSA.getValue(), x500NameInfo, keyPair.getPublic(), keyPair.getPrivate(), new Date(), DateUtil.offsetMonth(new Date(), 10 * 12));
+        Certificate[] certificates = new Certificate[]{rootCertificate};
+        try {
+            keyStore.setKeyEntry(generateAlias(keyPair), keyPair.getPrivate(), DEFAULT_KEYSTORE_PASSWORD.toCharArray(), certificates);
+            keyStore.store(new FileOutputStream(keyStorePath), DEFAULT_KEYSTORE_PASSWORD.toCharArray());
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void saveSecretKeyInKeystore(SecretKey secretKey) {
+        try {
+            keyStore.setEntry(generateSecretKeyAlias(secretKey), new KeyStore.SecretKeyEntry(secretKey), new KeyStore.PasswordProtection(DEFAULT_KEYSTORE_PASSWORD.toCharArray()));
+            keyStore.store(new FileOutputStream(keyStorePath), DEFAULT_KEYSTORE_PASSWORD.toCharArray());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public String generateAlias(KeyPair keyPair) {
+        return Base64.encode(DigestUtil.sha1(keyPair.getPublic().getEncoded()));
+    }
+
+    public String generateSecretKeyAlias(SecretKey secretKey) {
+        return Base64.encode(DigestUtil.sha1(secretKey.getEncoded()));
+    }
+
+
 }

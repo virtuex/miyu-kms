@@ -18,7 +18,8 @@ repositories {
 dependencies {
     implementation group: 'cn.hutool', name: 'hutool-core', version: "$hutoolVersion"
     implementation group: 'cn.hutool', name: 'hutool-crypto',  version: "$hutoolVersion"
-    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.70'
+    implementation group: 'org.bouncycastle', name: 'bcprov-jdk15on', version: '1.69'
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.69'
     testImplementation 'junit:junit:4.13.1'
 }
 
