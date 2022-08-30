@@ -1,19 +1,19 @@
 package miyu.kms.engine.impl;
 
-import cn.hutool.core.codec.Base64;
+import miyu.kms.constants.EngineType;
 import miyu.kms.domain.EMSKeyPair;
-import miyu.kms.domain.EMSecretKey;
 import miyu.kms.domain.config.FileEngineConfig;
+import miyu.kms.engine.EngineFactory;
+import miyu.kms.engine.IEngine;
 
 import java.io.IOException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
-import java.util.Optional;
 
 public class FileEngineTest {
-    RSAFileEngine fileEngine = new RSAFileEngine();
+    IEngine fileEngine = EngineFactory.getInstance(EngineType.RSA_FILE_ENGINE);
 
     public void initParam() throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException {
         FileEngineConfig fileEngineConfig = new FileEngineConfig();
@@ -41,7 +41,7 @@ public class FileEngineTest {
 //        fileEngine1.importMainKey(encode,"RSA",null,fileEngine1.generateSecretKeyAlias(emSecretKey.getSecretKey()));
     }
 
-    public RSAFileEngine getFileEngine() {
+    public IEngine getFileEngine() {
         return fileEngine;
     }
 }

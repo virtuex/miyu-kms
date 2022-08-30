@@ -1,7 +1,6 @@
 package miyu.kms.engine.impl;
 
 import cn.hutool.core.codec.Base64;
-import cn.hutool.core.compiler.DiagnosticUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
@@ -24,7 +23,6 @@ import miyu.kms.utils.CertUtils;
 import miyu.kms.utils.X500NameInfo;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 
-import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
@@ -362,12 +360,12 @@ public class RSAFileEngine implements IEngine {
 
     @Override
     public EngineType getType() {
-        return EngineType.FILE;
+        return EngineType.RSA_FILE_ENGINE;
     }
 
     @Override
     public String getEngineDesc() {
-        return EngineType.FILE.getDesc();
+        return EngineType.RSA_FILE_ENGINE.getDesc();
     }
 
     @Override

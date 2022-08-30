@@ -7,7 +7,7 @@ package miyu.kms.constants;
  * @date Date : 2022年08月22日 下午5:19
  */
 public enum EngineType {
-    FILE("文件引擎");
+    RSA_FILE_ENGINE("RSA文件引擎");
 
     private String desc;
 

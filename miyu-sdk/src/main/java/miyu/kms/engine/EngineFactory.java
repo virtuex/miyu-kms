@@ -10,9 +10,9 @@ import miyu.kms.engine.impl.RSAFileEngine;
  * @date Date : 2022年08月26日 上午11:46
  */
 public class EngineFactory {
-    public IEngine init(EngineType type){
+    public static IEngine getInstance(EngineType type){
         switch (type){
-            case FILE:
+            case RSA_FILE_ENGINE:
                 return new RSAFileEngine();
         }
         throw new RuntimeException("unsuported engineType:"+type.name());
