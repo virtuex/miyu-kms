@@ -20,7 +20,8 @@ import javax.validation.Valid;
  * @author xuda
  */
 @Slf4j
-@RestController
+@Deprecated
+//@RestController
 public class LoginController {
 
     @Resource

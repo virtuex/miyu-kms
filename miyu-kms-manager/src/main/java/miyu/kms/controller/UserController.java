@@ -24,7 +24,8 @@ import java.util.List;
  * @Description: TODO
  * @date Date : 2022年08月23日 下午2:00
  */
-@RestController
+@Deprecated
+//@RestController
 public class UserController {
     @Resource
     private UserService userService;

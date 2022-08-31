@@ -26,7 +26,8 @@ import java.io.IOException;
  * @author xuda
  */
 @Slf4j
-@RestController
+//@RestController
+@Deprecated
 @RequestMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 public class CaptchaController {
     static final String CAPTCHA_FORMAT = "jpg";
